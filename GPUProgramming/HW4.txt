@@ -1,0 +1,25 @@
+Phone reflection 모델에서는
+
+float sDotN = max( dot(s,tnorm), 0.0 );
+vec3 diffuse = Light.Ld * Material.Kd * sDotN; 
+
+이와 같이 광원 방향 s와 normal 방향 tnorm 두 벡터의 내적을 곱해 diffuse light를 결정한다.
+
+하지만 12쪽 왼쪽 그림처럼 backface가 보이는 상황에서 이 연산을 하면 내적의 값이 0이
+되어 diffuse 값도 0(검정색)이 된다. 따라서 그림의 내부가 어둡게 그려진다.
+
+오른쪽 그림처럼 내부까지 적절히 렌더링하기 위해서는
+아래처럼 backface의 normal을 뒤집은 뒤(invert) diffuse light를 계산해야 한다.
+
+if(sDotN < 0.0) tnorm = -tnorm;
+
+그리고 Fragment shader에서 polygon의 winding 방향을 통해 현재 보이는 면의 방향을 확인해
+FragColor을 다르게 적용할 수 있다.
+
+if(gl_FrontFacing)
+    FragColor = vec4(FrontColor, 1.0);
+else
+    FragColor = vec4(BackColor, 1.0);
+
+
+201521053 김남현
