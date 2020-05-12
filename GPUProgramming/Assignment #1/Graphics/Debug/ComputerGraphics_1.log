@@ -1,0 +1,21 @@
+﻿  main.cpp
+c:\github\learning-graphics\gpuprogramming\assignment #1\graphics\main.h(11): warning C4244: '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\github\learning-graphics\gpuprogramming\assignment #1\graphics\main.cpp(153): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\github\learning-graphics\gpuprogramming\assignment #1\graphics\main.cpp(154): warning C4244: '인수': 'double'에서 'genType'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              genType=float
+          ]
+c:\github\learning-graphics\gpuprogramming\assignment #1\graphics\main.cpp(155): warning C4244: '인수': 'double'에서 'genType'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              genType=float
+          ]
+c:\github\learning-graphics\gpuprogramming\assignment #1\graphics\main.cpp(167): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\github\learning-graphics\gpuprogramming\assignment #1\graphics\main.cpp(167): warning C4244: '=': 'genType'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              genType=double
+          ]
+LINK : warning LNK4098: 'MSVCRT' defaultlib가 다른 라이브러리와 충돌합니다. /NODEFAULTLIB:library를 사용하십시오.
+  ComputerGraphics_1.vcxproj -> C:\GitHub\learning-graphics\GPUProgramming\Assignment #1\Debug\Graphics.exe
