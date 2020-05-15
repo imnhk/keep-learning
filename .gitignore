@@ -7,3 +7,10 @@ GPUProgramming/.vs
 *.user
 *.zip
 *.tlog
+GPUProgramming/GPUP/x64/Debug/GPUP.exe
+GPUProgramming/GPUP/x64/Debug/GPUP.ilk
+GPUProgramming/GPUP/x64/Debug/GPUP.log
+GPUProgramming/GPUP/x64/Debug/GPUP.pdb
+GPUProgramming/GPUP/x64/Debug/main.obj
+GPUProgramming/GPUP/x64/Debug/vc141.idb
+GPUProgramming/GPUP/x64/Debug/vc141.pdb

@@ -18,10 +18,6 @@ out vec4 out_Color;
 
 void main(void)
 {
-	
-
-	/*
-
 	vec3 N = normalize(normal); // Normalized normal :)
 	vec3 L = normalize(lightPos - fragPos); // vector to light
 	vec3 V = normalize(cameraPos - fragPos); // vector to camera
@@ -43,5 +39,4 @@ void main(void)
 	I = pow(I, vec3(1.0 / gamma));
 
 	out_Color = vec4(I, 1);
-	*/
 }

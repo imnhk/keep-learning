@@ -19,12 +19,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-// 마우스 드래그를 통한 카메라 회전을 위한 Callback
+// 마우스 드래그 입력을 위해서
 void cursorCallback(GLFWwindow* win, double x, double y);
 void buttonCallback(GLFWwindow* win, int btn, int action, int mods);
 
-// settings
+// 상수
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float PI = 3.141592;
 const float camDist = 3;
