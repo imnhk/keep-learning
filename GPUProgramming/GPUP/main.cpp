@@ -5,7 +5,7 @@ double lastX = 0;
 double lastY = 0;
 
 enum RenderMode{NdotV, Silhouettes, BlurredSilouettes};
-RenderMode renderMode = BlurredSilouettes;
+RenderMode renderMode = NdotV;
 
 int main(int argc, char* argv[])
 {
@@ -83,11 +83,10 @@ int main(int argc, char* argv[])
 	glEnableVertexAttribArray(2);
 
 
-
-	// multi-pass render를 위한 gBuffer
-	unsigned int gBuffer = 0;
-	glGenFramebuffers(1, &gBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+	// multi-pass render를 위한 frameBuffer
+	unsigned int fbo = 0;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	unsigned int renderedTex;
 	glGenTextures(1, &renderedTex);
@@ -96,28 +95,27 @@ int main(int argc, char* argv[])
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTex, 0);
-	unsigned int drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
-
+	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTex, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, renderedTex, 0);
+	
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); 
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); 
+	
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		return false;
 
 	// unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-
-
 	// Render loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// 입력
 		processInput(window);
-
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shader.ID);
 
@@ -134,17 +132,23 @@ int main(int argc, char* argv[])
 		shader.setMat4("model", model);
 		shader.setVec3("cameraPos", camera.Position);
 
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
 		if (renderMode == NdotV)
 		{
-			shader.setInt("pass", 0);
+
+
+			glUniform1i(glGetUniformLocation(shader.ID, "pass"), 0);
 			glBindVertexArray(ourModel.meshes[0].VAO);
 			glDrawElements(GL_TRIANGLES, ourModel.meshes[0].indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 
 		}
 		else if (renderMode == Silhouettes) {
-			shader.setInt("pass", 1);
-			//ourModel.Draw(shader);
+
+			glUniform1i(glGetUniformLocation(shader.ID, "pass"), 1);
 			glBindVertexArray(ourModel.meshes[0].VAO);
 			glDrawElements(GL_TRIANGLES, ourModel.meshes[0].indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
@@ -152,26 +156,30 @@ int main(int argc, char* argv[])
 		}
 		else if (renderMode == BlurredSilouettes)
 		{
-			// renderedTex에 render
-			glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+			// pass 1
+			// Draw to renderTex
+			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 			glUniform1i(glGetUniformLocation(shader.ID, "pass"), 1);
+
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
 
 			glBindVertexArray(ourModel.meshes[0].VAO);
 			glDrawElements(GL_TRIANGLES, ourModel.meshes[0].indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 
-			// 다시 원래 framebuffer로 복구
+			// pass 2
+			// Draw quad
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glUniform1i(glGetUniformLocation(shader.ID, "pass"), 2);
-			
+
 			// quad 그리기
-			glBindTexture(GL_TEXTURE_2D, renderedTex);
 			glBindVertexArray(quadVAO);
+			glBindTexture(GL_TEXTURE_2D, renderedTex);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindVertexArray(0);
 
-
-		
 		}
 		else
 			return -1;
