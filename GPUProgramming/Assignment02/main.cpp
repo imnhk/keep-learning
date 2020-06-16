@@ -39,9 +39,12 @@ int main(int argc, char* argv[])
 
 	glEnable(GL_DEPTH_TEST);
 
+#pragma endregion
+
 	// Shader를 불러와서 compile
-	Shader shader("src/vertex.shader", "src/fragment.shader");
-	
+	Shader shader("src/vertex.shader", "src/fragment.shader", "src/geometry.shader");
+
+#pragma region LoadModel
 
 	// 모델 불러오기
 	// main()의 argument 로 파일명을 입력받을 수 있다
@@ -63,27 +66,14 @@ int main(int argc, char* argv[])
 	Model ourModel(modelName);
 	cout << "Loaded model " << modelName << endl;
 
+#pragma endregion
 
-	// fullscreen quad buffer
-	static const GLfloat quadVertexData[] = {
-		// position			// texCoord
-		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f
-	};
+#pragma region SetBuffers
 
-	// renderTexture quad VAO
+		// renderTexture quad VAO
 	unsigned int quadVAO;
 	glGenVertexArrays(1, &quadVAO);
 	glBindVertexArray(quadVAO);
-
-	unsigned int quadVertexBuffer;
-	glGenBuffers(1, &quadVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertexData), quadVertexData, GL_STATIC_DRAW);
 	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -91,39 +81,13 @@ int main(int argc, char* argv[])
 	glEnableVertexAttribArray(2);
 
 
-	// multi-pass render를 위한 frameBuffer
-	unsigned int FBO = 0;
-	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
-	unsigned int renderedTex;
-	glGenTextures(1, &renderedTex);
-	glBindTexture(GL_TEXTURE_2D, renderedTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTex, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, renderedTex, 0);
-	
-	unsigned int RBO;
-	glGenRenderbuffers(1, &RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); 
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); 
-	
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		return false;
-
-	// unbind framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #pragma endregion
 
 	// Render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		// Key 입력 확인
 		processInput(window);
 
 		glUseProgram(shader.ID);

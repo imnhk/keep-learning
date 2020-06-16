@@ -1,7 +1,6 @@
 GPUProgramming/*/Debug/
 GPUProgramming/*/include/
 GPUProgramming/*/lib/
-GPUProgramming/*/src/
 GPUProgramming/*/.vs
 GPUProgramming/.vs
 *.user
@@ -14,3 +13,6 @@ GPUProgramming/GPUP/x64/Debug/GPUP.pdb
 GPUProgramming/GPUP/x64/Debug/main.obj
 GPUProgramming/GPUP/x64/Debug/vc141.idb
 GPUProgramming/GPUP/x64/Debug/vc141.pdb
+*.log
+*.idb
+*.pdb

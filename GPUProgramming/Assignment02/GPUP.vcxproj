@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\fragment.shader" />
+    <None Include="src\geometry.shader" />
     <None Include="src\vertex.shader" />
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,9 @@
     <None Include="src\vertex.shader">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="src\geometry.shader">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
