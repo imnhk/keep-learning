@@ -50,7 +50,8 @@ int main(int argc, char* argv[])
 	// main()의 argument 로 파일명을 입력받을 수 있다
 	// argument가 없으면 console에서 입력한다
 
-	string modelName;
+	string modelName = "spot_triangulated.obj";
+	/*
 	if (argc > 1)
 		modelName = argv[0];
 	else {
@@ -60,7 +61,7 @@ int main(int argc, char* argv[])
 		
 		if(modelName == "1")
 			modelName = "spot_triangulated.obj";
-	}
+	}*/
 
 	cout << "Loading model " << modelName << "..." << endl;
 	Model ourModel(modelName);
