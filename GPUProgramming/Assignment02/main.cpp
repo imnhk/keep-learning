@@ -141,9 +141,13 @@ void processInput(GLFWwindow *window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
 		renderMode = NdotV;
+		camera.Zoom = 45;
+
 	}
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
 		renderMode = Silhouettes;
+		camera.Zoom = 100;
+
 	}
 }
 
